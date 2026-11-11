@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+
 }
 
 datasource db {
@@ -8,16 +9,128 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
-  DEVOPS
-  VIEWER
+  Admin
+  Devops
+  Viewer
+}
+
+enum EnvName {
+  Development
+  Staging
+  Production
+}
+
+enum ServerStatus {
+  Running
+  Stopped
+  Maintenance
+}
+
+enum AppStatus {
+  Deployed
+  Failed
+  Building
+}
+
+enum AlertSeverity {
+  Critical
+  Warning
+  Info
+}
+
+enum AlertStatus {
+  Active
+  Resolved
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  email        String   @unique
-  passwordHash String
-  name         String
-  role         Role     @default(VIEWER)
-  createdAt    DateTime @default(now())
+  idUser          String           @id @default(uuid())
+  email           String           @unique
+  hashedPassword  String
+  fullName        String
+  role            Role             @default(Viewer)
+  teamAssignments TeamAssignment[]
+}
+
+model Project {
+  idProject       String           @id @default(uuid())
+  name            String
+  description     String?
+  createdAt       DateTime         @default(now())
+  teamAssignments TeamAssignment[]
+  environments    Environment[]
+}
+
+model TeamAssignment {
+  idTeamAssign String   @id @default(uuid())
+  joinedAt     DateTime @default(now())
+  
+  userId       String
+  user         User     @relation(fields: [userId], references: [idUser], onDelete: Cascade)
+  
+  projectId    String
+  project      Project  @relation(fields: [projectId], references: [idProject], onDelete: Cascade)
+}
+
+model Environment {
+  idEnv     String   @id @default(uuid())
+  name      EnvName  @default(Development)
+  
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [idProject], onDelete: Cascade)
+  
+  servers   Server[]
+}
+
+model Server {
+  idServer   String       @id @default(uuid())
+  provider   String       // e.g., AWS, OVH, Local
+  region     String       // e.g., eu-west-1
+  cpuCores   Int
+  ramGb      Int
+  storageGb  Int
+  publicIp   String
+  privateIp  String
+  status     ServerStatus @default(Running)
+
+  envId      String
+  env        Environment  @relation(fields: [envId], references: [idEnv], onDelete: Cascade)
+
+  applications Application[]
+  metrics      Metric[]
+  alerts       Alert[]
+}
+
+model Application {
+  idApp       String    @id @default(uuid())
+  name        String
+  version     String
+  environment String
+  status      AppStatus @default(Deployed)
+
+  serverId    String
+  server      Server    @relation(fields: [serverId], references: [idServer], onDelete: Cascade)
+}
+
+model Metric {
+  idMetric     String   @id @default(uuid())
+  timestamp    DateTime @default(now())
+  cpuUsage     Float    // Percentage (e.g., 45.5)
+  memoryUsage  Float    // Percentage
+  diskUsage    Float    // Percentage
+
+  serverId     String
+  server       Server   @relation(fields: [serverId], references: [idServer], onDelete: Cascade)
+}
+
+model Alert {
+  idAlert        String        @id @default(uuid())
+  type           String        // e.g., HighCPU, LowMemory
+  severity       AlertSeverity @default(Warning)
+  message        String
+  status         AlertStatus   @default(Active)
+  isConfigurable Boolean       @default(true)
+
+  serverId       String
+  server         Server        @relation(fields: [serverId], references: [idServer], onDelete: Cascade)
 }
