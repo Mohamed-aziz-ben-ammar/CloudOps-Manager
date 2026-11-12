@@ -10,4 +10,3 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     await this.$disconnect();
   }
 }
-git commit -m "initialize prisma schema and postgres db" 
