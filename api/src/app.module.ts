@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { ServersModule } from './modules/servers/servers.module.js';
 import { MetricsModule } from './modules/metrics/metrics.module.js';
 import { AlertsModule } from './modules/alerts/alerts.module.js';
+import { DashboardModule } from './modules/dashboard/dashboard.module.js';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AlertsModule } from './modules/alerts/alerts.module.js';
     ServersModule,
     MetricsModule,
     AlertsModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],
