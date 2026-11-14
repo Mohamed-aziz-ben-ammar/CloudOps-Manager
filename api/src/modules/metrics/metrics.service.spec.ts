@@ -19,7 +19,7 @@ function createPrismaMock() {
 }
 
 function createAlertEvaluatorMock() {
-  return { evaluate: vi.fn().mockResolvedValue(0) };
+  return { evaluate: vi.fn().mockResolvedValue({ created: 0, updated: 0, resolved: 0 }) };
 }
 
 // Resolves with the rejection reason (and fails if the promise does not reject),
@@ -160,7 +160,7 @@ describe('MetricsService', () => {
       });
       alertEvaluator.evaluate = vi.fn(async () => {
         order.push('evaluate');
-        return 0;
+        return { created: 0, updated: 0, resolved: 0 };
       });
 
       await service.create(ENV_ID, SERVER_ID, valid);

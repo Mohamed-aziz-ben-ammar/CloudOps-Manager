@@ -38,6 +38,12 @@ enum AlertSeverity {
   Info
 }
 
+enum MetricType {
+  CPU
+  Memory
+  Disk
+}
+
 enum AlertStatus {
   Active
   Resolved
@@ -99,6 +105,7 @@ model Server {
   applications Application[]
   metrics      Metric[]
   alerts       Alert[]
+  alertThresholds AlertThreshold[]
 }
 
 model Application {
@@ -130,7 +137,29 @@ model Alert {
   message        String
   status         AlertStatus   @default(Active)
   isConfigurable Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  resolvedAt     DateTime?
 
   serverId       String
   server         Server        @relation(fields: [serverId], references: [idServer], onDelete: Cascade)
+
+  // The migration also creates a partial unique index "Alert_one_active_per_server_type"
+  // on (serverId, type) WHERE status = 'Active'. Prisma cannot express it, so it only
+  // exists in SQL; it guarantees at most one Active alert per server and type.
+  @@index([serverId, createdAt])
+}
+
+// Per-server alert thresholds, one row per metric. A metric without a row falls back
+// to the ALERT_*_THRESHOLD environment defaults.
+model AlertThreshold {
+  idThreshold String     @id @default(uuid())
+  metric      MetricType
+  warning     Float      // percent, 0-100
+  critical    Float      // percent, 0-100, strictly greater than warning
+  updatedAt   DateTime   @updatedAt
+
+  serverId    String
+  server      Server     @relation(fields: [serverId], references: [idServer], onDelete: Cascade)
+
+  @@unique([serverId, metric])
 }

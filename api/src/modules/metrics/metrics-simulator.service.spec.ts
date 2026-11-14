@@ -10,7 +10,7 @@ function setup(env: Record<string, string | undefined> = {}) {
     metric: { createMany: vi.fn() },
   };
   const config = { get: vi.fn((key: string) => env[key]) };
-  const alertEvaluator = { evaluate: vi.fn().mockResolvedValue(0) };
+  const alertEvaluator = { evaluate: vi.fn().mockResolvedValue({ created: 0, updated: 0, resolved: 0 }) };
   const service = new MetricsSimulatorService(prisma as never, config as never, alertEvaluator as never);
   // Keep test output clean and let tests assert on logging.
   const logger = { log: vi.fn(), error: vi.fn() };
