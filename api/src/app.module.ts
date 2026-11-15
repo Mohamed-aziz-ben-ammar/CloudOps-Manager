@@ -6,6 +6,8 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { ServersModule } from './modules/servers/servers.module.js';
+import { EnvironmentsModule } from './environments/environments.module.js';
+import { TeamAssignmentsModule } from './team-assignments/team-assignments.module.js';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { ServersModule } from './modules/servers/servers.module.js';
     UsersModule,
     AuthModule,
     ServersModule,
+    EnvironmentsModule,
+    TeamAssignmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
