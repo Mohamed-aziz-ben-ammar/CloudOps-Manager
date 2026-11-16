@@ -102,14 +102,13 @@ model Server {
 }
 
 model Application {
-  idApp       String    @id @default(uuid())
-  name        String
-  version     String
-  environment String
-  status      AppStatus @default(Deployed)
+  idApp    String    @id @default(uuid())
+  name     String
+  version  String
+  status   AppStatus @default(Deployed)
 
-  serverId    String
-  server      Server    @relation(fields: [serverId], references: [idServer], onDelete: Cascade)
+  serverId String
+  server   Server    @relation(fields: [serverId], references: [idServer], onDelete: Cascade)
 }
 
 model Metric {
