@@ -7,6 +7,8 @@ import { UsersModule } from './modules/users/users.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { ServersModule } from './modules/servers/servers.module.js';
 import { ProjectsModule } from './modules/projects/projects.module.js';
+import { EnvironmentsModule } from './modules/environments/environments.module.js';
+import { TeamAssignmentsModule } from './modules/team-assignments/team-assignments.module.js';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { ProjectsModule } from './modules/projects/projects.module.js';
     AuthModule,
     ServersModule,
     ProjectsModule,
+    EnvironmentsModule,
+    TeamAssignmentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
